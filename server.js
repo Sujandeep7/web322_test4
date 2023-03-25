@@ -5,10 +5,7 @@ const app = express();
 const exphbs = require("express-handlebars");
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(
-  "fdfeigut",
-  "fdfeigut",
-  "SiKSQ_y4GHa1Wqng39CYsxjiJ0a85BhC",
+const sequelize = new Sequelize("fdfeigut","fdfeigut","SiKSQ_y4GHa1Wqng39CYsxjiJ0a85BhC",
   {
     host: "isilo.db.elephantsql.com",
     dialect: "postgres",
@@ -20,15 +17,12 @@ const sequelize = new Sequelize(
   }
 );
 
-let users = sequelize.define(
-  "users",
+let users = sequelize.define("users",
   {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-    },
-
+      autoIncrement: true,},
     name: Sequelize.STRING,
     email: Sequelize.STRING,
     created_at: Sequelize.DATE,
@@ -69,23 +63,23 @@ app.get("/update-user", (req, res) => {
         id: id,
       },
     })
-    .then(function (results) {
-      res.render("edit", { users: results[0], layout: false });
+    .then(function (data) {
+      res.render("edit", { users: data[0], layout: false });
     });
 });
 
 
 app.post("/update-user", (req, res) => {
-  const name = req.body.name;
   const id = req.body.id;
+  const name = req.body.name;
   const email = req.body.email;
 
   sequelize.sync().then(function () {
     users
       .update(
         {
-          name: name,
           email: email,
+          name: name,
         },
         {
           where: { id: id },
@@ -102,11 +96,9 @@ app.get("/delete-user", (req, res) => {
   const id = req.query.id;
 
   sequelize.sync().then(function () {
-    users
-      .destroy({
+    users.destroy({
         where: { id: id },
-      })
-      .then(function () {
+      }).then(function () {
         res.redirect("/");
       });
   });
@@ -116,23 +108,18 @@ app.get("/delete-user", (req, res) => {
 app.post("/insert-user", (req, res) => {
   const { name, email } = req.body;
 
-  users
-    .create({
+  users.create({
       name: name,
       email: email,
-    })
-    .then(function () {
+    }).then(function () {
       console.log("User created");
-
       res.redirect("/");
     });
 });
 
 app.get("/", (req, res) => {
   sequelize.sync().then(function () {
-    users
-      .findAll({})
-      .then(function (results) {
+    users.findAll({}).then(function (results) {
         res.render("index", { users: results, layout: false });
       });
   });
